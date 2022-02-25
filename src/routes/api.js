@@ -10,7 +10,9 @@ router.get('/image/:id', apiController.imageDetail);
 
 router.get('/image', apiController.image);
 
-router.post('/image', apiController.postImage);
+router.post('/image', apiController.imagePredict);
+
+router.get('/getImg', apiController.getImg)
 
 
 module.exports = router;
