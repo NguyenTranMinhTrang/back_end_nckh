@@ -2,7 +2,9 @@
 const { response } = require('express')
 const animal = require('../../models/animal')
 const image = require('../../models/image')
-const fs = require("fs");
+const predict = require('../../../predict_models/predict')
+var path = require('path');
+
 class APIControllers {
     // [GET] api/animal
 
@@ -34,22 +36,35 @@ class APIControllers {
     }
 
     //[POST] api/image
-    postImage(req, res) {
+    async imagePredict(req, res) {
         const { name, base64 } = req.body
         const filename = `${name} - ${Date.now()}.png`
-        fs.writeFile(`public/${filename}`, base64, { encoding: 'base64' }, function (err) {
-            if (err) {
-                res.send(err)
-                return
-            }
-            else {
-                console.log('File created!!')
-                image.postImage(filename, (response) => {
-                    res.json({ message: response })
-                })
-            }
-        });
 
+        const buffer = Buffer.from(base64, 'base64');
+        const id = await predict(buffer);
+
+        animal.getById(id, (data) => {
+            res.json({ result: data })
+        })
+
+        // fs.writeFile(`public/${filename}`, base64, { encoding: 'base64' }, function (err) {
+        //     if (err) {
+        //         res.send(err)
+        //         return
+        //     }
+        //     else {
+        //         console.log('File created!!')
+        //         image.postImage(filename, (response) => {
+        //             res.json({ message: response })
+        //         })
+        //     }
+        // });
+
+    }
+
+    getImg(req, res) {
+
+        res.sendFile(path.resolve(__dirname + '../../../../public/1_44.jpg'))
     }
 }
 

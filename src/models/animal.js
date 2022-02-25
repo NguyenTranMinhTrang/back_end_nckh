@@ -3,6 +3,10 @@ const db = require('../config/db/index')
 const Animal = (animal) => {
     this.id = animal.id;
     this.name = animal.name;
+    this.img = img;
+    this.sciencename = sciencename;
+    this.conservation = conservation;
+    this.description = description;
 }
 
 Animal.getAll = (result) => {
