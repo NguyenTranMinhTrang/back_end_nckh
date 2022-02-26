@@ -1,10 +1,4 @@
 const tf = require('@tensorflow/tfjs-node')
-const fs = require("fs");
-var Path = require('path');
-
-//var file_path = Path.join(__dirname, '..', 'public', '16_191.jpg');
-
-//const img = fs.readFileSync(file_path)
 
 async function predict(buffer) {
 
@@ -18,7 +12,7 @@ async function predict(buffer) {
 
     const prediction = model.predict(tensor)
     const result = prediction.as1D().argMax().dataSync()[0];
-    return result;
+    return result + 1;
 }
 
 module.exports = predict;
