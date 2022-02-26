@@ -47,19 +47,6 @@ class APIControllers {
             res.json({ result: data })
         })
 
-        // fs.writeFile(`public/${filename}`, base64, { encoding: 'base64' }, function (err) {
-        //     if (err) {
-        //         res.send(err)
-        //         return
-        //     }
-        //     else {
-        //         console.log('File created!!')
-        //         image.postImage(filename, (response) => {
-        //             res.json({ message: response })
-        //         })
-        //     }
-        // });
-
     }
 
     getImg(req, res) {
