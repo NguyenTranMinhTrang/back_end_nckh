@@ -3,7 +3,6 @@ const { response } = require('express')
 const animal = require('../../models/animal')
 const image = require('../../models/image')
 const predict = require('../../../predict_models/predict')
-var path = require('path');
 
 class APIControllers {
     // [GET] api/animal
@@ -41,17 +40,14 @@ class APIControllers {
         const filename = `${name} - ${Date.now()}.png`
 
         const buffer = Buffer.from(base64, 'base64');
-        const id = await predict(buffer);
-
-        animal.getById(id, (data) => {
-            res.json({ result: data })
-        })
-
-    }
-
-    getImg(req, res) {
-
-        res.sendFile(path.resolve(__dirname + '../../../../public/1_44.jpg'))
+        try {
+            const id = await predict(buffer);
+            animal.getById(id, (data) => {
+                res.json({ result: data })
+            })
+        } catch (error) {
+            res.json(err)
+        }
     }
 }
 

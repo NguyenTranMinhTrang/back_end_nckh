@@ -8,18 +8,20 @@ const Image = (image) => {
 Image.getAll = (result) => {
     db.query('SELECT * FROM user_image', (err, image) => {
         if (err) {
-            console.log(err);
-            result(null);
-        } else {
-            result(image);
+            result({ error: err })
+        }
+        else {
+            result(image)
         }
     })
 }
 
 Image.getById = (id, result) => {
     db.query(`SELECT * FROM user_image WHERE id = ${id}`, (err, image) => {
-        if (err || image.length == 0) {
-            console.log(err)
+        if (err) {
+            result({ error: err })
+        }
+        else if (image.length == 0) {
             result(null)
         }
         else {
