@@ -3,20 +3,14 @@ const User = require('../../models/user');
 
 class UserControllers {
     handleSignup(req, res) {
-        let { name, email, password } = req.body;
-        name = name.trim();
+        let { email, password } = req.body;
         email = email.trim();
         password = password.trim();
 
-        if (name == "" || email == "" || password == "") {
+        if (email == "" || password == "") {
             res.json({
                 status: "FAILED",
                 message: "Empty input fields!"
-            });
-        } else if (!/^[a-zA-Z0-9 ]*$/.test(name)) {
-            res.json({
-                status: "FAILED",
-                message: "Names can only contain letters, numbers and spaces"
             });
         } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
             res.json({
@@ -50,7 +44,7 @@ class UserControllers {
                     const saltRounds = 10;
                     bcrypt.hash(password, saltRounds)
                         .then(hashedPassword => {
-                            User.save(name, email, hashedPassword, (result) => {
+                            User.save(email, hashedPassword, (result) => {
                                 if (result.error) {
                                     res.json({
                                         status: "FAILED",

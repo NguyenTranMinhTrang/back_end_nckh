@@ -17,8 +17,8 @@ User.find = (email, result) => {
     })
 }
 
-User.save = (name, email, password, result) => {
-    db.query(`INSERT INTO user(name,email,password) VALUES ('${name}','${email}','${password}')`, (err, data) => {
+User.save = (email, password, result) => {
+    db.query(`INSERT INTO user(email,password) VALUES ('${email}','${password}')`, (err, data) => {
         if (err) {
             result({ error: err })
         }
