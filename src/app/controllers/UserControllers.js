@@ -55,6 +55,7 @@ class UserControllers {
                                     res.json({
                                         status: "SUCCESS",
                                         data: {
+                                            'id': id,
                                             'email': email
                                         }
                                     });
@@ -103,7 +104,6 @@ class UserControllers {
                                     data: {
                                         id: result[0].id,
                                         email: result[0].email,
-                                        password: result[0].password,
                                         emailVerifired: true,
                                     }
                                 })
