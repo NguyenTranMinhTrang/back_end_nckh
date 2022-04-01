@@ -6,4 +6,6 @@ router.use('/signup', userController.handleSignup);
 
 router.use('/login', userController.handleLogin);
 
+router.use('/changePassword', userController.handleChangePassword)
+
 module.exports = router;

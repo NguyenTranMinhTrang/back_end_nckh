@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../../models/user');
-
+const uuid = require('uuid');
 class UserControllers {
     handleSignup(req, res) {
         let { email, password } = req.body;
@@ -17,10 +17,10 @@ class UserControllers {
                 status: "FAILED",
                 message: "Invalid email entered"
             });
-        } else if (password.length < 6 || password.length > 32) {
+        } else if (password.length < 8 || password.length > 32) {
             res.json({
                 status: "FAILED",
-                message: "Password length must be 6 - 32 characters "
+                message: "Password length must be 8 - 32 characters "
             });
         } else {
             //Check if user already exists
@@ -41,10 +41,10 @@ class UserControllers {
                 } else {
                     // try to create new user
                     //password handling
-                    const saltRounds = 10;
-                    bcrypt.hash(password, saltRounds)
+                    bcrypt.hash(password, 10)
                         .then(hashedPassword => {
-                            User.save(email, hashedPassword, (result) => {
+                            const id = uuid.v1() // create time-based ID 
+                            User.save(id, email, hashedPassword, (result) => {
                                 if (result.error) {
                                     res.json({
                                         status: "FAILED",
@@ -54,7 +54,9 @@ class UserControllers {
                                 else {
                                     res.json({
                                         status: "SUCCESS",
-                                        message: "Signup sucessful",
+                                        data: {
+                                            'email': email
+                                        }
                                     });
                                 }
                             })
@@ -83,50 +85,138 @@ class UserControllers {
         }
         else {
             User.find(email, (result) => {
-                let length = Object.keys(result).length
+                let length = Object.keys(result).length;
 
                 if (result.error) {
                     res.json({
                         status: "FAILED",
-                        message: "An erorr occurred while checking for existing user!",
+                        error: result.error
                     });
                 }
-                else if (length) {
+                else if (length != 0) {
                     const hashedPassword = result[0].password;
                     bcrypt.compare(password, hashedPassword)
                         .then(data => {
                             if (data) {
                                 res.json({
                                     status: "SUCCESS",
-                                    message: "Signin sucessful",
                                     data: {
-                                        'User name': result[0].name,
-                                        'Email: ': result[0].email
+                                        id: result[0].id,
+                                        email: result[0].email,
+                                        password: result[0].password,
+                                        emailVerifired: true,
                                     }
                                 })
                             }
                             else {
                                 res.json({
-                                    status: "FAILED",
-                                    message: "Invalid password entered!"
+                                    status: "SUCCESS",
+                                    data: {
+                                        emailVerifired: false,
+                                        message: "Incorrect password!"
+                                    }
                                 })
                             }
                         })
                         .catch(err => {
                             res.json({
                                 status: "FAILED",
-                                message: "An error occurred while comparing password!"
+                                error: err
                             })
                         })
                 }
                 else {
                     res.json({
-                        status: "FAILED",
-                        message: "Email does not exist!"
+                        status: "SUCCESS",
+                        data: {
+                            emailVerifired: false,
+                            message: "Email does not exist"
+                        }
                     })
                 }
             })
         }
+    }
+
+    userHistory(req, res) {
+        let { id, url, time } = req.body;
+        User.saveHistory(id, url, time, (result) => {
+            if (result.error) {
+                res.json({
+                    status: "FAILED",
+                    message: "An erorr occurred while saving history!"
+                });
+            }
+            else {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Save history sucessful",
+                });
+            }
+        })
+    }
+
+    handleChangePassword(req, res) {
+        let { email, password, newPassword } = req.body
+        User.find(email, (result) => {
+            let length = Object.keys(result).length
+            if (result.error) {
+                res.json({
+                    status: "FAILED",
+                    message: "An erorr occurred while checking for existing user!",
+                });
+            }
+            else if (length != 0) {
+                const hashedPassword = result[0].password;
+                bcrypt.compare(password, hashedPassword)
+                    .then(data => {
+                        //Hash new password and update database
+                        bcrypt.hash(newPassword, 10)
+                            .then(newHashedPassword => {
+                                User.updatePassword(email, newHashedPassword, (result) => {
+                                    if (result.error) {
+                                        console.log(result.error)
+                                        res.json({
+                                            status: "FAILED",
+                                            message: "An erorr occurred while update user password!"
+                                        });
+                                    }
+                                    else {
+                                        res.json({
+                                            status: "SUCCESS",
+                                            message: "Update password sucessful",
+                                        });
+                                    }
+                                })
+
+                            })
+                            .catch(err => {
+                                res.json({
+                                    status: "FAILED",
+                                    message: "An erorr occurred while hashing password!"
+                                });
+                            })
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        res.json({
+                            status: "FAILED",
+                            message: "An error occurred while comparing password!"
+                        })
+                    })
+            }
+            else {
+                res.json({
+                    status: "SUCCESS",
+                    data: {
+                        emailVerifired: false,
+                        message: "Email does not exist"
+                    }
+                })
+            }
+        })
+
+
     }
 }
 
