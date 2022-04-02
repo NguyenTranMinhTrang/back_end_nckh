@@ -12,6 +12,6 @@ app.use(bodyParser.json({ limit: '50mb', extended: true }));
 route(app);
 
 app.listen(port, () => {
-    console.log(`Example app listening on port http://localhost:${port}`)
+    console.log(`Example app listening on port ${port}`)
 })
 
