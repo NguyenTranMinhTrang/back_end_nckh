@@ -10,6 +10,6 @@ router.post('/changePassword', userController.handleChangePassword)
 
 router.post('/postHistory', userController.postHistory)
 
-router.get('/getHistory', userController.getHistory)
+router.post('/getHistory', userController.getHistory)
 
 module.exports = router;
