@@ -127,7 +127,7 @@ class UserControllers {
                 }
                 else {
                     res.json({
-                        status: "FAILED",
+                        status: "SUCCESS",
                         data: {
                             emailVerifired: false,
                             message: "Email does not exist"
