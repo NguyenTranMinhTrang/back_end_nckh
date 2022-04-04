@@ -142,6 +142,7 @@ class UserControllers {
         let { id, animalID, time } = req.body;
         User.saveHistory(id, animalID, time, (result) => {
             if (result.error) {
+                console.log(result.error)
                 res.json({
                     status: "FAILED",
                     message: "An erorr occurred while saving history!"
