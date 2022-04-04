@@ -139,8 +139,8 @@ class UserControllers {
     }
 
     postHistory(req, res) {
-        let { id, url, time } = req.body;
-        User.saveHistory(id, url, time, (result) => {
+        let { id, animalID, time } = req.body;
+        User.saveHistory(id, animalID, time, (result) => {
             if (result.error) {
                 res.json({
                     status: "FAILED",
@@ -160,6 +160,7 @@ class UserControllers {
         let { id } = req.body
         User.findHistory(id, (result) => {
             if (result.error) {
+                console.log(result.error)
                 res.json({
                     status: "FAILED",
                     message: "An erorr occurred while searching for history!"

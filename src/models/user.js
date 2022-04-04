@@ -28,8 +28,8 @@ User.saveUser = (id, email, password, result) => {
     })
 }
 
-User.saveHistory = (id, url, time, result) => {
-    pool.query(`INSERT INTO history(id,url,time) VALUES ('${id}','${url}','${time}')`, (err, data) => {
+User.saveHistory = (id, animalID, time, result) => {
+    pool.query(`INSERT INTO history(id,animalID,time) VALUES ('${id}',${animalID},'${time}')`, (err, data) => {
         if (err) {
             result({ error: err })
         }
@@ -40,7 +40,7 @@ User.saveHistory = (id, url, time, result) => {
 }
 
 User.findHistory = (id, result) => {
-    pool.query(`SELECT * FROM history WHERE id = '${id}'`, (err, data) => {
+    pool.query(`SELECT h.animalID, a.name, a.img, h.time FROM history h, animal a WHERE h.id = '${id}' and h.animalID = a.id`, (err, data) => {
         if (err) {
             result({ error: err })
         }
