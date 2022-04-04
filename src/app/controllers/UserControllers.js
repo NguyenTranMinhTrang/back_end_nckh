@@ -110,7 +110,7 @@ class UserControllers {
                             }
                             else {
                                 res.json({
-                                    status: "FAILED",
+                                    status: "SUCCESS",
                                     data: {
                                         emailVerifired: false,
                                         message: "Incorrect password!"
@@ -179,6 +179,7 @@ class UserControllers {
         User.findUser(email, (result) => {
             let length = Object.keys(result).length
             if (result.error) {
+                console.log(result.error)
                 res.json({
                     status: "FAILED",
                     message: "An erorr occurred while checking for existing user!",
