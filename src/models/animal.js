@@ -1,4 +1,4 @@
-const db = require('../config/db/index')
+const db = require('../config/db/dbpool')
 
 const Animal = (animal) => {
     this.id = animal.id;

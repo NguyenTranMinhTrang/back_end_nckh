@@ -24,7 +24,7 @@ class UserControllers {
             });
         } else {
             //Check if user already exists
-            User.find(email, (result) => {
+            User.findUser(email, (result) => {
                 let length = Object.keys(result).length
                 if (result.error) {
                     res.json({
@@ -44,7 +44,7 @@ class UserControllers {
                     bcrypt.hash(password, 10)
                         .then(hashedPassword => {
                             const id = uuid.v1() // create time-based ID 
-                            User.save(id, email, hashedPassword, (result) => {
+                            User.saveUser(id, email, hashedPassword, (result) => {
                                 if (result.error) {
                                     res.json({
                                         status: "FAILED",
@@ -85,7 +85,7 @@ class UserControllers {
             });
         }
         else {
-            User.find(email, (result) => {
+            User.findUser(email, (result) => {
                 let length = Object.keys(result).length;
 
                 if (result.error) {
@@ -110,7 +110,7 @@ class UserControllers {
                             }
                             else {
                                 res.json({
-                                    status: "SUCCESS",
+                                    status: "FAILED",
                                     data: {
                                         emailVerifired: false,
                                         message: "Incorrect password!"
@@ -127,7 +127,7 @@ class UserControllers {
                 }
                 else {
                     res.json({
-                        status: "SUCCESS",
+                        status: "FAILED",
                         data: {
                             emailVerifired: false,
                             message: "Email does not exist"
@@ -138,7 +138,7 @@ class UserControllers {
         }
     }
 
-    userHistory(req, res) {
+    postHistory(req, res) {
         let { id, url, time } = req.body;
         User.saveHistory(id, url, time, (result) => {
             if (result.error) {
@@ -156,9 +156,27 @@ class UserControllers {
         })
     }
 
+    getHistory(req, res) {
+        let { id } = req.body
+        User.findHistory(id, (result) => {
+            if (result.error) {
+                res.json({
+                    status: "FAILED",
+                    message: "An erorr occurred while searching for history!"
+                });
+            }
+            else {
+                res.json({
+                    status: "SUCCESS",
+                    data: result
+                });
+            }
+        })
+    }
+
     handleChangePassword(req, res) {
         let { email, password, newPassword } = req.body
-        User.find(email, (result) => {
+        User.findUser(email, (result) => {
             let length = Object.keys(result).length
             if (result.error) {
                 res.json({
@@ -170,35 +188,41 @@ class UserControllers {
                 const hashedPassword = result[0].password;
                 bcrypt.compare(password, hashedPassword)
                     .then(data => {
-                        //Hash new password and update database
-                        bcrypt.hash(newPassword, 10)
-                            .then(newHashedPassword => {
-                                User.updatePassword(email, newHashedPassword, (result) => {
-                                    if (result.error) {
-                                        console.log(result.error)
-                                        res.json({
-                                            status: "FAILED",
-                                            message: "An erorr occurred while update user password!"
-                                        });
-                                    }
-                                    else {
-                                        res.json({
-                                            status: "SUCCESS",
-                                            message: "Update password sucessful",
-                                        });
-                                    }
-                                })
+                        if (data) {
+                            //Hash new password and update database
+                            bcrypt.hash(newPassword, 10)
+                                .then(newHashedPassword => {
+                                    User.updatePassword(email, newHashedPassword, (result) => {
+                                        if (result.error) {
+                                            res.json({
+                                                status: "FAILED",
+                                                message: "An erorr occurred while update user password!"
+                                            });
+                                        }
+                                        else {
+                                            res.json({
+                                                status: "SUCCESS",
+                                                message: "Update password sucessful",
+                                            });
+                                        }
+                                    })
 
+                                })
+                                .catch(err => {
+                                    res.json({
+                                        status: "FAILED",
+                                        message: "An erorr occurred while hashing password!"
+                                    });
+                                })
+                        }
+                        else {
+                            res.json({
+                                status: "FAILED",
+                                message: "Incorrect password!"
                             })
-                            .catch(err => {
-                                res.json({
-                                    status: "FAILED",
-                                    message: "An erorr occurred while hashing password!"
-                                });
-                            })
+                        }
                     })
                     .catch(err => {
-                        console.log(err)
                         res.json({
                             status: "FAILED",
                             message: "An error occurred while comparing password!"
@@ -207,11 +231,8 @@ class UserControllers {
             }
             else {
                 res.json({
-                    status: "SUCCESS",
-                    data: {
-                        emailVerifired: false,
-                        message: "Email does not exist"
-                    }
+                    status: "FAILED",
+                    message: "Email does not exist"
                 })
             }
         })

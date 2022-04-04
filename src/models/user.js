@@ -1,4 +1,4 @@
-const db = require('../config/db/index')
+const pool = require('../config/db/dbpool')
 
 const User = (user) => {
     this.id = user.id
@@ -6,8 +6,8 @@ const User = (user) => {
     this.email = user.email
 }
 
-User.find = (email, result) => {
-    db.query(`SELECT * FROM user WHERE email = '${email}'`, (err, data) => {
+User.findUser = (email, result) => {
+    pool.query(`SELECT * FROM user WHERE email = '${email}'`, (err, data) => {
         if (err) {
             result({ error: err })
         }
@@ -17,8 +17,8 @@ User.find = (email, result) => {
     })
 }
 
-User.save = (id, email, password, result) => {
-    db.query(`INSERT INTO user(id,email,password) VALUES ('${id}','${email}','${password}')`, (err, data) => {
+User.saveUser = (id, email, password, result) => {
+    pool.query(`INSERT INTO user(id,email,password) VALUES ('${id}','${email}','${password}')`, (err, data) => {
         if (err) {
             result({ error: err })
         }
@@ -29,7 +29,18 @@ User.save = (id, email, password, result) => {
 }
 
 User.saveHistory = (id, url, time, result) => {
-    db.query(`INSERT INTO history(id,url,time) VALUES ('${id}','${url}','${time}')`, (err, data) => {
+    pool.query(`INSERT INTO history(id,url,time) VALUES ('${id}','${url}','${time}')`, (err, data) => {
+        if (err) {
+            result({ error: err })
+        }
+        else {
+            result(data);
+        }
+    })
+}
+
+User.findHistory = (id, result) => {
+    pool.query(`SELECT * FROM history WHERE id = '${id}'`, (err, data) => {
         if (err) {
             result({ error: err })
         }
@@ -40,7 +51,7 @@ User.saveHistory = (id, url, time, result) => {
 }
 
 User.updatePassword = (email, newPassword, result) => {
-    db.query(`UPDATE user SET password = '${newPassword}' WHERE email = '${email}';`, (err, data) => {
+    pool.query(`UPDATE user SET password = '${newPassword}' WHERE email = '${email}';`, (err, data) => {
         if (err) {
             result({ error: err })
         }

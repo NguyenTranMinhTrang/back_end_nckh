@@ -1,5 +1,3 @@
-
-const { response } = require('express')
 const animal = require('../../models/animal')
 const image = require('../../models/image')
 const predict = require('../../../predict_models/predict')

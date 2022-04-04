@@ -1,4 +1,4 @@
-const db = require('../config/db/index')
+const db = require('../config/db/dbpool')
 
 const Image = (image) => {
     this.id = image.id;

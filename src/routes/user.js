@@ -2,10 +2,14 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../app/controllers/UserControllers');
 
-router.use('/signup', userController.handleSignup);
+router.post('/signup', userController.handleSignup);
 
-router.use('/login', userController.handleLogin);
+router.post('/login', userController.handleLogin);
 
-router.use('/changePassword', userController.handleChangePassword)
+router.post('/changePassword', userController.handleChangePassword)
+
+router.post('/postHistory', userController.postHistory)
+
+router.get('/getHistory', userController.getHistory)
 
 module.exports = router;
