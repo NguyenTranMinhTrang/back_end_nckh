@@ -17,6 +17,17 @@ User.findUser = (email, result) => {
     })
 }
 
+User.findUserByID = (id, result) => {
+    pool.query(`SELECT * FROM user WHERE id = '${id}'`, (err, data) => {
+        if (err) {
+            result({ error: err })
+        }
+        else {
+            result(data);
+        }
+    })
+}
+
 User.saveUser = (id, email, password, result) => {
     pool.query(`INSERT INTO user(id,email,password) VALUES ('${id}','${email}','${password}')`, (err, data) => {
         if (err) {
@@ -52,6 +63,17 @@ User.findHistory = (id, result) => {
 
 User.updatePassword = (email, newPassword, result) => {
     pool.query(`UPDATE user SET password = '${newPassword}' WHERE email = '${email}';`, (err, data) => {
+        if (err) {
+            result({ error: err })
+        }
+        else {
+            result(data);
+        }
+    })
+}
+
+User.updateProfile = (id, profile, result) => {
+    pool.query(`UPDATE user SET avatar = '${profile}' WHERE id = '${id}';`, (err, data) => {
         if (err) {
             result({ error: err })
         }

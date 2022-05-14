@@ -1,6 +1,10 @@
 const bcrypt = require('bcrypt');
 const User = require('../../models/user');
 const uuid = require('uuid');
+const jwt = require('jsonwebtoken')
+const cloudinary = require('../../cloudinary/imageUpload');
+const { profile } = require('@tensorflow/tfjs-node');
+
 class UserControllers {
     handleSignup(req, res) {
         let { email, password } = req.body;
@@ -52,12 +56,18 @@ class UserControllers {
                                     });
                                 }
                                 else {
+                                    //Authorization
+                                    const token = jwt.sign({ userId: id }, process.env.JWT_SECRET, {
+                                        expiresIn: '1d',
+                                    });
                                     res.json({
                                         status: "SUCCESS",
                                         data: {
-                                            'id': id,
-                                            'email': email
-                                        }
+                                            id: id,
+                                            email: email,
+                                            avatar: result[0].avatar,
+                                            token: token
+                                        },
                                     });
                                 }
                             })
@@ -99,12 +109,20 @@ class UserControllers {
                     bcrypt.compare(password, hashedPassword)
                         .then(data => {
                             if (data) {
+
+                                //Authorization
+                                const token = jwt.sign({ userId: result[0].id }, process.env.JWT_SECRET, {
+                                    expiresIn: '1d',
+                                });
+
                                 res.json({
                                     status: "SUCCESS",
                                     data: {
                                         id: result[0].id,
                                         email: result[0].email,
+                                        avatar: result[0].avatar,
                                         emailVerifired: true,
+                                        token: token
                                     }
                                 })
                             }
@@ -139,6 +157,13 @@ class UserControllers {
     }
 
     postHistory(req, res) {
+        // let user = req.user
+        // if (!user) {
+        //     res.json({
+        //         status: "FAILED",
+        //         message: "Unauthorized access!"
+        //     });
+        // }
         let { id, animalID, time } = req.body;
         User.saveHistory(id, animalID, time, (result) => {
             if (result.error) {
@@ -158,6 +183,13 @@ class UserControllers {
     }
 
     getHistory(req, res) {
+        // let user = req.user
+        // if (!user) {
+        //     res.json({
+        //         status: "FAILED",
+        //         message: "Unauthorized access!"
+        //     });
+        // }
         let { id } = req.body
         User.findHistory(id, (result) => {
             if (result.error) {
@@ -177,6 +209,13 @@ class UserControllers {
     }
 
     handleChangePassword(req, res) {
+        // let user = req.user
+        // if (!user) {
+        //     res.json({
+        //         status: "FAILED",
+        //         message: "Unauthorized access!"
+        //     });
+        // }
         let { email, password, newPassword } = req.body
         User.findUser(email, (result) => {
             let length = Object.keys(result).length
@@ -240,7 +279,58 @@ class UserControllers {
             }
         })
 
+    }
 
+    uploadProfile(req, res) {
+        let user = req.user
+        if (!user) {
+            res.json({
+                status: "FAILED",
+                message: "Unauthorized access!"
+            });
+        }
+
+        try {
+            cloudinary.uploader.upload(req.file.path, {
+                public_id: `${user.id}_profile`,
+                folder: 'avatar',
+                width: 500,
+                height: 500,
+                crop: 'fill',
+            }, (error, result) => {
+                if (error) {
+                    res.json({
+                        status: "FAILED",
+                        message: "An error occurred while uploading image!"
+                    })
+                }
+                // console.log(result)
+                User.updateProfile(user.id, result.url, (result) => {
+                    if (result.error) {
+                        console.log(result.error)
+                        res.json({
+                            status: "FAILED",
+                            message: "An erorr occurred while update user profile!"
+                        });
+                    }
+                    else {
+                        res.json({
+                            status: "SUCCESS",
+                            message: "Your profile has updated!",
+                        });
+                    }
+                })
+            });
+
+        } catch (error) {
+            res
+                .status(500)
+                .json({
+                    status: "FAILED",
+                    message: "Server error, try after some time!"
+                });
+            console.log('Error while uploading profile image', error.message);
+        }
     }
 }
 
