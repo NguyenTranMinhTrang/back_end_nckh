@@ -40,7 +40,10 @@ class APIControllers {
             const id = await predict(fileBuffer);
             if (id >= 1 && id <= 30) {
                 animal.getById(id, (data) => {
-                    res.json({ result: data })
+                    res.json({
+                        status: 'SUCCESS',
+                        result: data
+                    })
                 })
             }
             else {
