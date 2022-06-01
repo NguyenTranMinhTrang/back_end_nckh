@@ -56,19 +56,41 @@ class UserControllers {
                                     });
                                 }
                                 else {
-                                    //Authorization
-                                    const token = jwt.sign({ userId: id }, process.env.JWT_SECRET, {
-                                        expiresIn: '1d',
-                                    });
-                                    res.json({
-                                        status: "SUCCESS",
-                                        data: {
-                                            id: id,
-                                            email: email,
-                                            avatar: result[0].avatar,
-                                            token: token
-                                        },
-                                    });
+                                    User.findUser(email, (result) => {
+                                        let length = Object.keys(result).length;
+
+                                        if (result.error) {
+                                            res.json({
+                                                status: "FAILED",
+                                                error: result.error
+                                            });
+                                        }
+                                        else if (length != 0) {
+                                            const token = jwt.sign({ userId: result[0].id }, process.env.JWT_SECRET, {
+                                                expiresIn: '1d',
+                                            });
+
+                                            res.json({
+                                                status: "SUCCESS",
+                                                data: {
+                                                    id: result[0].id,
+                                                    email: result[0].email,
+                                                    avatar: result[0].avatar,
+                                                    emailVerifired: true,
+                                                    token: token
+                                                }
+                                            })
+                                        }
+                                        else {
+                                            res.json({
+                                                status: "SUCCESS",
+                                                data: {
+                                                    emailVerifired: false,
+                                                    message: "Some error occur while finding user"
+                                                }
+                                            })
+                                        }
+                                    })
                                 }
                             })
                         })

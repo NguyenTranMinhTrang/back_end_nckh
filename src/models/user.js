@@ -29,7 +29,7 @@ User.findUserByID = (id, result) => {
 }
 
 User.saveUser = (id, email, password, result) => {
-    pool.query(`INSERT INTO user(id,email,password) VALUES ('${id}','${email}','${password}')`, (err, data) => {
+    pool.query(`INSERT INTO user(id,email,password,avatar) VALUES ('${id}','${email}','${password}','')`, (err, data) => {
         if (err) {
             result({ error: err })
         }
