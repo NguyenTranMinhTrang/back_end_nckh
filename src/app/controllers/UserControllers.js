@@ -76,18 +76,14 @@ class UserControllers {
                                                     id: result[0].id,
                                                     email: result[0].email,
                                                     avatar: result[0].avatar,
-                                                    emailVerifired: true,
                                                     token: token
                                                 }
                                             })
                                         }
                                         else {
                                             res.json({
-                                                status: "SUCCESS",
-                                                data: {
-                                                    emailVerifired: false,
-                                                    message: "Some error occur while finding user"
-                                                }
+                                                status: "FAILED",
+                                                message: "Some error occur while finding user"
                                             })
                                         }
                                     })
@@ -123,7 +119,7 @@ class UserControllers {
                 if (result.error) {
                     res.json({
                         status: "FAILED",
-                        error: result.error
+                        message: result.error
                     });
                 }
                 else if (length != 0) {
@@ -143,35 +139,29 @@ class UserControllers {
                                         id: result[0].id,
                                         email: result[0].email,
                                         avatar: result[0].avatar,
-                                        emailVerifired: true,
                                         token: token
                                     }
                                 })
                             }
                             else {
                                 res.json({
-                                    status: "SUCCESS",
-                                    data: {
-                                        emailVerifired: false,
-                                        message: "Incorrect password!"
-                                    }
+                                    status: "FAILED",
+                                    message: "Incorrect password!"
+
                                 })
                             }
                         })
                         .catch(err => {
                             res.json({
                                 status: "FAILED",
-                                error: err
+                                message: err
                             })
                         })
                 }
                 else {
                     res.json({
-                        status: "SUCCESS",
-                        data: {
-                            emailVerifired: false,
-                            message: "Email does not exist"
-                        }
+                        status: "FAILED",
+                        message: "Email does not exist"
                     })
                 }
             })
