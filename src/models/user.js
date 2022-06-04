@@ -61,6 +61,17 @@ User.findHistory = (id, result) => {
     })
 }
 
+User.deleteHistory = (id, animalID, time, result) => {
+    pool.query(`DELETE FROM history WHERE id = '${id}' AND animalID = '${animalID}' AND time = '${time}'`, (err, data) => {
+        if (err) {
+            result({ error: err })
+        }
+        else {
+            result(data);
+        }
+    })
+}
+
 User.updatePassword = (email, newPassword, result) => {
     pool.query(`UPDATE user SET password = '${newPassword}' WHERE email = '${email}';`, (err, data) => {
         if (err) {

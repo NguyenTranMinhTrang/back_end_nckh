@@ -14,6 +14,8 @@ router.post('/postHistory', userController.postHistory)
 
 router.post('/getHistory', userController.getHistory)
 
+router.post('/deleteHistory', userController.deleteHistory)
+
 router.post('/uploadProfile', isAuth, uploads.single('profile'), userController.uploadProfile)
 
 module.exports = router;

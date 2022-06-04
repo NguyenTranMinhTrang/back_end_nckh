@@ -169,13 +169,6 @@ class UserControllers {
     }
 
     postHistory(req, res) {
-        // let user = req.user
-        // if (!user) {
-        //     res.json({
-        //         status: "FAILED",
-        //         message: "Unauthorized access!"
-        //     });
-        // }
         let { id, animalID, time } = req.body;
         User.saveHistory(id, animalID, time, (result) => {
             if (result.error) {
@@ -188,21 +181,14 @@ class UserControllers {
             else {
                 res.json({
                     status: "SUCCESS",
-                    message: "Save history sucessful",
+                    message: "Save history successful",
                 });
             }
         })
     }
 
     getHistory(req, res) {
-        // let user = req.user
-        // if (!user) {
-        //     res.json({
-        //         status: "FAILED",
-        //         message: "Unauthorized access!"
-        //     });
-        // }
-        let { id } = req.body
+        let { id } = req.body;
         User.findHistory(id, (result) => {
             if (result.error) {
                 console.log(result.error)
@@ -214,25 +200,36 @@ class UserControllers {
             else {
                 res.json({
                     status: "SUCCESS",
-                    data: result
+                    data: result.reverse()
+                });
+            }
+        })
+    }
+
+    deleteHistory(req, res) {
+        let { id, animalID, time } = req.body;
+        User.deleteHistory(id, animalID, time, (result) => {
+            if (result.error) {
+                console.log(result.error)
+                res.json({
+                    status: "FAILED",
+                    message: "An erorr occurred while deleting history!",
+                });
+            }
+            else {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Delete history successful!",
                 });
             }
         })
     }
 
     handleChangePassword(req, res) {
-        // let user = req.user
-        // if (!user) {
-        //     res.json({
-        //         status: "FAILED",
-        //         message: "Unauthorized access!"
-        //     });
-        // }
         let { email, password, newPassword } = req.body
         User.findUser(email, (result) => {
             let length = Object.keys(result).length
             if (result.error) {
-                console.log(result.error)
                 res.json({
                     status: "FAILED",
                     message: "An erorr occurred while checking for existing user!",

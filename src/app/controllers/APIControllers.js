@@ -1,34 +1,59 @@
 const animal = require('../../models/animal')
-const image = require('../../models/image')
 const predict = require('../../../predict_models/predict')
 const fs = require('fs')
 class APIControllers {
     // [GET] api/animal
 
     animal(req, res) {
-        animal.getAll((data) => {
-            res.json({ result: data })
+        animal.getAll((result) => {
+            if (result.error) {
+                res.json({
+                    status: "FAILED",
+                    message: "An erorr occurred while searching animal ID!",
+                });
+            }
+            else {
+                res.json({
+                    status: "SUCCESS",
+                    data: result
+                })
+            }
+        })
+    }
+
+    // [GET] api/animal/id
+    animalById(req, res) {
+        animal.getById(req.query.id, (result) => {
+            if (result.error) {
+                res.json({
+                    status: "FAILED",
+                    message: "An erorr occurred while searching animal ID!",
+                });
+            }
+            else {
+                res.json({
+                    status: "SUCCESS",
+                    data: result
+                })
+            }
         })
     }
 
     // [GET] api/animal/id
     detail(req, res) {
-        animal.getById(req.params.id, (data) => {
-            res.json({ result: data })
-        })
-    }
-
-    // [GET] api/image
-    image(req, res) {
-        image.getAll((data) => {
-            res.json({ result: data })
-        })
-    }
-
-    // [GET] api/image/id    
-    imageDetail(req, res) {
-        image.getById(req.params.id, (data) => {
-            res.json({ result: data })
+        animal.getById(req.params.id, (result) => {
+            if (result.error) {
+                res.json({
+                    status: "FAILED",
+                    message: "An erorr occurred while searching animal ID!",
+                });
+            }
+            else {
+                res.json({
+                    status: "SUCCESS",
+                    data: result
+                })
+            }
         })
     }
 
@@ -42,7 +67,7 @@ class APIControllers {
                 animal.getById(id, (data) => {
                     res.json({
                         status: 'SUCCESS',
-                        result: data
+                        data: data
                     })
                 })
             }
