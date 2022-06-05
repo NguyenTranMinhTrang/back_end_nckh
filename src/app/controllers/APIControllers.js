@@ -9,7 +9,7 @@ class APIControllers {
             if (result.error) {
                 res.json({
                     status: "FAILED",
-                    message: "An erorr occurred while searching animal ID!",
+                    message: "Có lỗi xảy ra khi đang tìm kiếm ID của động vật!",
                 });
             }
             else {
@@ -27,7 +27,7 @@ class APIControllers {
             if (result.error) {
                 res.json({
                     status: "FAILED",
-                    message: "An erorr occurred while searching animal ID!",
+                    message: "Có lỗi xảy ra khi đang tìm kiếm ID của động vật!",
                 });
             }
             else {
@@ -45,7 +45,7 @@ class APIControllers {
             if (result.error) {
                 res.json({
                     status: "FAILED",
-                    message: "An erorr occurred while searching animal ID!",
+                    message: "Có lỗi xảy ra khi đang tìm kiếm ID của động vật!",
                 });
             }
             else {
@@ -74,7 +74,7 @@ class APIControllers {
             else {
                 res.json({
                     status: 'FAILED',
-                    message: 'Fail to predict the image!! Please try again'
+                    message: 'Dự đoán ảnh không thành công!! Hãy thử lại'
                 })
             }
         } catch (error) {

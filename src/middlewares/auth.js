@@ -23,10 +23,8 @@ exports.isAuth = async (req, res, next) => {
                 else {
                     res.json({
                         status: "FAILED",
-                        data: {
-                            emailVerifired: false,
-                            message: "Unauthorized access!"
-                        }
+                        message: "Truy cập trái phép!"
+
                     })
                 }
             })
@@ -35,25 +33,25 @@ exports.isAuth = async (req, res, next) => {
             if (error.name === 'JsonWebTokenError') {
                 return res.json({
                     status: "FAILED",
-                    message: 'Unauthorized access!'
+                    message: 'Truy cập trái phép!'
                 });
             }
             if (error.name === 'TokenExpiredError') {
                 return res.json({
                     status: "FAILED",
-                    message: 'Session expired! Try to sign in again!',
+                    message: 'Phiên đã hết hạn! Hãy đăng nhập lại',
                 });
             }
 
             res.json({
                 status: "FAILED",
-                message: 'Internal server error!'
+                message: 'Lỗi máy chủ nội bộ!'
             });
         }
     } else {
         res.json({
             status: "FAILED",
-            message: "Unauthorized access!"
+            message: "Truy cập trái phép!"
         });
     }
 };

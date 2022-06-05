@@ -14,17 +14,17 @@ class UserControllers {
         if (email == "" || password == "") {
             res.json({
                 status: "FAILED",
-                message: "Empty input fields!"
+                message: "Dữ liệu input rỗng!"
             });
         } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
             res.json({
                 status: "FAILED",
-                message: "Invalid email entered"
+                message: "Email không hợp lệ"
             });
         } else if (password.length < 8 || password.length > 32) {
             res.json({
                 status: "FAILED",
-                message: "Password length must be 8 - 32 characters "
+                message: "Mật khẩu phải dài từ 8 - 32 kí tự "
             });
         } else {
             //Check if user already exists
@@ -33,14 +33,14 @@ class UserControllers {
                 if (result.error) {
                     res.json({
                         status: "FAILED",
-                        message: "An erorr occurred while checking for existing user!",
+                        message: "Có lỗi xảy ra khi tìm kiếm người dùng!",
                         err: result.error
                     });
                 }
                 else if (length) {
                     res.json({
                         status: "FAILED",
-                        message: "User with the provided email already exits"
+                        message: "Email đã được sử dụng!!"
                     });
                 } else {
                     // try to create new user
@@ -52,7 +52,7 @@ class UserControllers {
                                 if (result.error) {
                                     res.json({
                                         status: "FAILED",
-                                        message: "An erorr occurred while saving user account!"
+                                        message: "Có lỗi xảy ra khi lưu tài khoản người dùng!"
                                     });
                                 }
                                 else {
@@ -83,7 +83,7 @@ class UserControllers {
                                         else {
                                             res.json({
                                                 status: "FAILED",
-                                                message: "Some error occur while finding user"
+                                                message: "Có lỗi xảy ra khi tìm kiếm người dùng!"
                                             })
                                         }
                                     })
@@ -93,7 +93,7 @@ class UserControllers {
                         .catch(err => {
                             res.json({
                                 status: "FAILED",
-                                message: "An erorr occurred while hashing password!"
+                                message: "Có lỗi xảy ra khi lưu mật khẩu!"
                             });
                         })
                 }
@@ -109,7 +109,7 @@ class UserControllers {
         if (email == "" || password == "") {
             res.json({
                 status: "FAILED",
-                message: "Empty credential supplied!"
+                message: "Dữ liệu input rỗng!"
             });
         }
         else {
@@ -146,7 +146,7 @@ class UserControllers {
                             else {
                                 res.json({
                                     status: "FAILED",
-                                    message: "Incorrect password!"
+                                    message: "Sai mật khẩu!"
 
                                 })
                             }
@@ -161,7 +161,7 @@ class UserControllers {
                 else {
                     res.json({
                         status: "FAILED",
-                        message: "Email does not exist"
+                        message: "Email không tồn tại"
                     })
                 }
             })
@@ -175,13 +175,13 @@ class UserControllers {
                 console.log(result.error)
                 res.json({
                     status: "FAILED",
-                    message: "An erorr occurred while saving history!"
+                    message: "Có lỗi xảy ra khi lưu lịch sử!"
                 });
             }
             else {
                 res.json({
                     status: "SUCCESS",
-                    message: "Save history successful",
+                    message: "Lịch sử đã được lưu thành công",
                 });
             }
         })
@@ -194,7 +194,7 @@ class UserControllers {
                 console.log(result.error)
                 res.json({
                     status: "FAILED",
-                    message: "An erorr occurred while searching for history!"
+                    message: "Có lỗi xảy ra khi tìm kiếm lịch sử!"
                 });
             }
             else {
@@ -213,13 +213,13 @@ class UserControllers {
                 console.log(result.error)
                 res.json({
                     status: "FAILED",
-                    message: "An erorr occurred while deleting history!",
+                    message: "Có lỗi xảy ra khi xóa lịch sử!",
                 });
             }
             else {
                 res.json({
                     status: "SUCCESS",
-                    message: "Delete history successful!",
+                    message: "Xóa lịch sử thành công!",
                 });
             }
         })
@@ -232,7 +232,7 @@ class UserControllers {
             if (result.error) {
                 res.json({
                     status: "FAILED",
-                    message: "An erorr occurred while checking for existing user!",
+                    message: "Có lỗi xảy ra khi tìm kiếm người dùng!",
                 });
             }
             else if (length != 0) {
@@ -247,13 +247,13 @@ class UserControllers {
                                         if (result.error) {
                                             res.json({
                                                 status: "FAILED",
-                                                message: "An erorr occurred while update user password!"
+                                                message: "Có lỗi xảy ra khi cập nhật mật khẩu!"
                                             });
                                         }
                                         else {
                                             res.json({
                                                 status: "SUCCESS",
-                                                message: "Update password sucessful",
+                                                message: "Cập nhật mật khẩu thành công",
                                             });
                                         }
                                     })
@@ -262,28 +262,28 @@ class UserControllers {
                                 .catch(err => {
                                     res.json({
                                         status: "FAILED",
-                                        message: "An erorr occurred while hashing password!"
+                                        message: "Có lỗi xảy ra khi lưu mật khẩu!"
                                     });
                                 })
                         }
                         else {
                             res.json({
                                 status: "FAILED",
-                                message: "Incorrect password!"
+                                message: "Sai mật khẩu!"
                             })
                         }
                     })
                     .catch(err => {
                         res.json({
                             status: "FAILED",
-                            message: "An error occurred while comparing password!"
+                            message: "Có lỗi xảy ra khi so sánh mật khẩu!"
                         })
                     })
             }
             else {
                 res.json({
                     status: "FAILED",
-                    message: "Email does not exist"
+                    message: "Email không tồn tại!"
                 })
             }
         })
@@ -295,7 +295,7 @@ class UserControllers {
         if (!user) {
             res.json({
                 status: "FAILED",
-                message: "Unauthorized access!"
+                message: "Truy cập trái phép!"
             });
         }
 
@@ -310,7 +310,7 @@ class UserControllers {
                 if (error) {
                     res.json({
                         status: "FAILED",
-                        message: "An error occurred while uploading image!"
+                        message: "Có lỗi xảy ra khi đăng ảnh đại diện!"
                     })
                 }
                 // console.log(result)
@@ -319,13 +319,13 @@ class UserControllers {
                         console.log(result.error)
                         res.json({
                             status: "FAILED",
-                            message: "An erorr occurred while update user profile!"
+                            message: "Có lỗi xảy ra khi cập nhật hồ sơ người dùng!"
                         });
                     }
                     else {
                         res.json({
                             status: "SUCCESS",
-                            message: "Your profile has updated!",
+                            message: "Hồ sơ của bạn đã được cập nhật thành công!",
                         });
                     }
                 })
@@ -336,9 +336,9 @@ class UserControllers {
                 .status(500)
                 .json({
                     status: "FAILED",
-                    message: "Server error, try after some time!"
+                    message: "Lỗi server, hãy thử lại sau!"
                 });
-            console.log('Error while uploading profile image', error.message);
+            console.log('Lỗi khi đăng ảnh đại diện', error.message);
         }
     }
 }
