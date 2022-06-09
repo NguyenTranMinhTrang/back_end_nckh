@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const apiController = require('../app/controllers/APIControllers');
+const apiController = require('../controllers/Animal');
 const uploads = require('../middlewares/multer')
 
 router.get('/animal/get', apiController.animalById);
