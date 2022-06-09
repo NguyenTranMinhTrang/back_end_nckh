@@ -1,4 +1,4 @@
-const db = require('../config/db/index')
+const db = require('../config/db/dbpool')
 
 const Animal = (animal) => {
     this.id = animal.id;
@@ -9,27 +9,28 @@ const Animal = (animal) => {
     this.description = description;
 }
 
-Animal.getAll = (result) => {
-    db.query('SELECT * FROM animal', (err, animal) => {
-        if (err) {
-            result({ error: err })
-        } else {
-            result(animal)
-        }
+Animal.getAll = () => {
+    return new Promise(function (resolve, reject) {
+        db.query('SELECT * FROM animal', (err, animal) => {
+            if (err) {
+                return reject(err)
+            } else {
+                return resolve(animal)
+            }
+        })
     })
 }
 
-Animal.getById = (id, result) => {
-    db.query(`SELECT * FROM animal WHERE id = ${id}`, (err, animal) => {
-        if (err) {
-            result({ error: err })
-        }
-        else if (animal.length == 0) {
-            result(null)
-        }
-        else {
-            result(animal[0])
-        }
+Animal.getById = (id) => {
+    return new Promise(function (resolve, reject) {
+        db.query(`SELECT * FROM animal WHERE id = ${id}`, (err, animal) => {
+            if (err) {
+                return reject(err)
+            }
+            else {
+                return resolve(animal)
+            }
+        })
     })
 }
 
