@@ -46,7 +46,7 @@ class PasswordResetControllers {
                 throw Error("Thông tin người dùng rỗng !! Không thể gửi lại mã pin")
             }
             else {
-                // Delete old pin record and create a new one
+                // Delete old record and create a new one
                 const emailData = await sendResetPasswordEmail(email)
                 res.json({
                     status: "PENDING",
