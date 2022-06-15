@@ -116,10 +116,9 @@ class UserControllers {
         try {
             let { id, password, newPassword } = req.body
             const user = await User.findByID(id)
-            console.log(id)
             if (user.length) {
                 const hashedPassword = user[0].password;
-                const compareResult = compareHashedData(password, hashedPassword)
+                const compareResult = await compareHashedData(password, hashedPassword)
                 if (compareResult) {
                     //Hash new password and update database
                     const hashedNewPassword = await hashData(newPassword)
